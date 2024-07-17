@@ -832,3 +832,244 @@ var cancellable = function(fn, args, t) {
  *      console.log(result); // [{"time":20,"returned":10}]
  *  }, maxT + 15)
  */
+
+
+// 2725. Interval Cancellation
+
+// Given a function fn, an array of arguments args, and an interval time t, return a cancel function cancelFn.
+
+// After a delay of cancelTimeMs, the returned cancel function cancelFn will be invoked.
+
+// setTimeout(cancelFn, cancelTimeMs)
+// The function fn should be called with args immediately and then called again every t milliseconds until cancelFn is called at cancelTimeMs ms.
+
+
+// Example 1:
+
+// Input: fn = (x) => x * 2, args = [4], t = 35
+// Output: 
+// [
+//    {"time": 0, "returned": 8},
+//    {"time": 35, "returned": 8},
+//    {"time": 70, "returned": 8},
+//    {"time": 105, "returned": 8},
+//    {"time": 140, "returned": 8},
+//    {"time": 175, "returned": 8}
+// ]
+// Explanation: 
+// const cancelTimeMs = 190;
+// const cancelFn = cancellable((x) => x * 2, [4], 35);
+// setTimeout(cancelFn, cancelTimeMs);
+
+// Every 35ms, fn(4) is called. Until t=190ms, then it is cancelled.
+// 1st fn call is at 0ms. fn(4) returns 8.
+// 2nd fn call is at 35ms. fn(4) returns 8.
+// 3rd fn call is at 70ms. fn(4) returns 8.
+// 4th fn call is at 105ms. fn(4) returns 8.
+// 5th fn call is at 140ms. fn(4) returns 8.
+// 6th fn call is at 175ms. fn(4) returns 8.
+// Cancelled at 190ms
+// Example 2:
+
+// Input: fn = (x1, x2) => (x1 * x2), args = [2, 5], t = 30
+// Output: 
+// [
+//    {"time": 0, "returned": 10},
+//    {"time": 30, "returned": 10},
+//    {"time": 60, "returned": 10},
+//    {"time": 90, "returned": 10},
+//    {"time": 120, "returned": 10},
+//    {"time": 150, "returned": 10}
+// ]
+// Explanation: 
+// const cancelTimeMs = 165; 
+// const cancelFn = cancellable((x1, x2) => (x1 * x2), [2, 5], 30) 
+// setTimeout(cancelFn, cancelTimeMs)
+
+// Every 30ms, fn(2, 5) is called. Until t=165ms, then it is cancelled.
+// 1st fn call is at 0ms 
+// 2nd fn call is at 30ms 
+// 3rd fn call is at 60ms 
+// 4th fn call is at 90ms 
+// 5th fn call is at 120ms 
+// 6th fn call is at 150ms
+// Cancelled at 165ms
+// Example 3:
+
+// Input: fn = (x1, x2, x3) => (x1 + x2 + x3), args = [5, 1, 3], t = 50
+// Output: 
+// [
+//    {"time": 0, "returned": 9},
+//    {"time": 50, "returned": 9},
+//    {"time": 100, "returned": 9},
+//    {"time": 150, "returned": 9}
+// ]
+// Explanation: 
+// const cancelTimeMs = 180;
+// const cancelFn = cancellable((x1, x2, x3) => (x1 + x2 + x3), [5, 1, 3], 50)
+// setTimeout(cancelFn, cancelTimeMs)
+
+// Every 50ms, fn(5, 1, 3) is called. Until t=180ms, then it is cancelled. 
+// 1st fn call is at 0ms
+// 2nd fn call is at 50ms
+// 3rd fn call is at 100ms
+// 4th fn call is at 150ms
+// Cancelled at 180ms
+ 
+// Constraints:
+
+// fn is a function
+// args is a valid JSON array
+// 1 <= args.length <= 10
+// 30 <= t <= 100
+// 10 <= cancelTimeMs <= 500
+
+// Sol_15}
+
+/**
+ * @param {Function} fn
+ * @param {Array} args
+ * @param {number} t
+ * @return {Function}
+ */
+var cancellable = function(fn, args, t) {
+    fn(...args);
+    let timer = setInterval(() => fn(...args), t);
+
+    let cancelFn = () => clearInterval(timer);
+    return cancelFn;
+};
+
+/**
+ *  const result = [];
+ *
+ *  const fn = (x) => x * 2;
+ *  const args = [4], t = 35, cancelTimeMs = 190;
+ *
+ *  const start = performance.now();
+ *
+ *  const log = (...argsArr) => {
+ *      const diff = Math.floor(performance.now() - start);
+ *      result.push({"time": diff, "returned": fn(...argsArr)});
+ *  }
+ *       
+ *  const cancel = cancellable(log, args, t);
+ *
+ *  setTimeout(cancel, cancelTimeMs);
+ *   
+ *  setTimeout(() => {
+ *      console.log(result); // [
+ *                           //     {"time":0,"returned":8},
+ *                           //     {"time":35,"returned":8},
+ *                           //     {"time":70,"returned":8},
+ *                           //     {"time":105,"returned":8},
+ *                           //     {"time":140,"returned":8},
+ *                           //     {"time":175,"returned":8}
+ *                           // ]
+ *  }, cancelTimeMs + t + 15)    
+ */
+
+
+// 2637. Promise Time Limit
+
+
+// Given an asynchronous function fn and a time t in milliseconds, return a new time limited version of the input function. fn takes arguments provided to the time limited function.
+
+// The time limited function should follow these rules:
+
+// If the fn completes within the time limit of t milliseconds, the time limited function should resolve with the result.
+// If the execution of the fn exceeds the time limit, the time limited function should reject with the string "Time Limit Exceeded".
+ 
+
+// Example 1:
+
+// Input: 
+// fn = async (n) => { 
+//   await new Promise(res => setTimeout(res, 100)); 
+//   return n * n; 
+// }
+// inputs = [5]
+// t = 50
+// Output: {"rejected":"Time Limit Exceeded","time":50}
+// Explanation:
+// const limited = timeLimit(fn, t)
+// const start = performance.now()
+// let result;
+// try {
+//    const res = await limited(...inputs)
+//    result = {"resolved": res, "time": Math.floor(performance.now() - start)};
+// } catch (err) {
+//    result = {"rejected": err, "time": Math.floor(performance.now() - start)};
+// }
+// console.log(result) // Output
+
+// The provided function is set to resolve after 100ms. However, the time limit is set to 50ms. It rejects at t=50ms because the time limit was reached.
+// Example 2:
+
+// Input: 
+// fn = async (n) => { 
+//   await new Promise(res => setTimeout(res, 100)); 
+//   return n * n; 
+// }
+// inputs = [5]
+// t = 150
+// Output: {"resolved":25,"time":100}
+// Explanation:
+// The function resolved 5 * 5 = 25 at t=100ms. The time limit is never reached.
+// Example 3:
+
+// Input: 
+// fn = async (a, b) => { 
+//   await new Promise(res => setTimeout(res, 120)); 
+//   return a + b; 
+// }
+// inputs = [5,10]
+// t = 150
+// Output: {"resolved":15,"time":120}
+// Explanation:
+// ​​​​The function resolved 5 + 10 = 15 at t=120ms. The time limit is never reached.
+// Example 4:
+
+// Input: 
+// fn = async () => { 
+//   throw "Error";
+// }
+// inputs = []
+// t = 1000
+// Output: {"rejected":"Error","time":0}
+// Explanation:
+// The function immediately throws an error.
+ 
+
+// Constraints:
+
+// 0 <= inputs.length <= 10
+// 0 <= t <= 1000
+// fn returns a promise
+
+// Sol_16}
+
+/**
+ * @param {Function} fn
+ * @param {number} t
+ * @return {Function}
+ */
+ 
+var timeLimit = function(fn, t) {
+	return async function(...args) {
+        const originalFnPromise = fn(...args);
+
+        const timeoutPromise = new Promise((_, reject) => {
+            setTimeout(() => {
+                reject('Time Limit Exceeded')
+            }, t);
+        })
+
+        return Promise.race([originalFnPromise, timeoutPromise]);
+    }
+};
+
+/**
+ * const limited = timeLimit((t) => new Promise(res => setTimeout(res, t)), 100);
+ * limited(150).catch(console.log) // "Time Limit Exceeded" at t=100ms
+ */
