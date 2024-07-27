@@ -1467,3 +1467,145 @@ Array.prototype.last = function() {
  * const arr = [1, 2, 3];
  * arr.last(); // 3
  */
+
+
+// 2631. Group By
+
+// Write code that enhances all arrays such that you can call the array.groupBy(fn) method on any array and it will return a grouped version of the array.
+
+// A grouped array is an object where each key is the output of fn(arr[i]) and each value is an array containing all items in the original array with that key.
+
+// The provided callback fn will accept an item in the array and return a string key.
+
+// The order of each value list should be the order the items appear in the array. Any order of keys is acceptable.
+
+// Please solve it without lodash's _.groupBy function.
+
+// Example 1:
+
+// Input: 
+// array = [
+//   {"id":"1"},
+//   {"id":"1"},
+//   {"id":"2"}
+// ], 
+// fn = function (item) { 
+//   return item.id; 
+// }
+// Output: 
+// { 
+//   "1": [{"id": "1"}, {"id": "1"}],   
+//   "2": [{"id": "2"}] 
+// }
+// Explanation:
+// Output is from array.groupBy(fn).
+// The selector function gets the "id" out of each item in the array.
+// There are two objects with an "id" of 1. Both of those objects are put in the first array.
+// There is one object with an "id" of 2. That object is put in the second array.
+// Example 2:
+
+// Input: 
+// array = [
+//   [1, 2, 3],
+//   [1, 3, 5],
+//   [1, 5, 9]
+// ]
+// fn = function (list) { 
+//   return String(list[0]); 
+// }
+// Output: 
+// { 
+//   "1": [[1, 2, 3], [1, 3, 5], [1, 5, 9]] 
+// }
+// Explanation:
+// The array can be of any type. In this case, the selector function defines the key as being the first element in the array. 
+// All the arrays have 1 as their first element so they are grouped together.
+// {
+//   "1": [[1, 2, 3], [1, 3, 5], [1, 5, 9]]
+// }
+// Example 3:
+
+// Input: 
+// array = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+// fn = function (n) { 
+//   return String(n > 5);
+// }
+// Output:
+// {
+//   "true": [6, 7, 8, 9, 10],
+//   "false": [1, 2, 3, 4, 5]
+// }
+// Explanation:
+// The selector function splits the array by whether each number is greater than 5.
+ 
+
+// Constraints:
+
+// 0 <= array.length <= 105
+// fn returns a string
+
+
+// Sol_23}
+
+/**
+ * @param {Function} fn
+ * @return {Object}
+ */
+Array.prototype.groupBy = function(fn) {
+    return this.reduce((grouped, item) => {
+        const key = fn(item)
+
+        if(!grouped[key]) {
+            grouped[key] = [];
+        }
+
+        grouped[key].push(item)
+
+        return grouped
+    }, {})
+};
+
+/**
+ * [1,2,3].groupBy(String) // {"1":[1],"2":[2],"3":[3]}
+*/
+
+
+// 2724. Sort By
+
+// Given an array arr and a function fn, return a sorted array sortedArr. You can assume fn only returns numbers and those numbers determine the sort order of sortedArr. sortedArray must be sorted in ascending order by fn output.
+
+// You may assume that fn will never duplicate numbers for a given array.
+
+// Example 1:
+
+// Input: arr = [5, 4, 1, 2, 3], fn = (x) => x
+// Output: [1, 2, 3, 4, 5]
+// Explanation: fn simply returns the number passed to it so the array is sorted in ascending order.
+// Example 2:
+
+// Input: arr = [{"x": 1}, {"x": 0}, {"x": -1}], fn = (d) => d.x
+// Output: [{"x": -1}, {"x": 0}, {"x": 1}]
+// Explanation: fn returns the value for the "x" key. So the array is sorted based on that value.
+// Example 3:
+
+// Input: arr = [[3, 4], [5, 2], [10, 1]], fn = (x) => x[1]
+// Output: [[10, 1], [5, 2], [3, 4]]
+// Explanation: arr is sorted in ascending order by number at index=1. 
+ 
+
+// Constraints:
+
+// arr is a valid JSON array
+// fn is a function that returns a number
+// 1 <= arr.length <= 5 * 105
+
+// Sol_24}
+
+/**
+ * @param {Array} arr
+ * @param {Function} fn
+ * @return {Array}
+ */
+var sortBy = function(arr, fn) {
+    return arr.sort((a,b) => fn(a) - fn(b))
+};
