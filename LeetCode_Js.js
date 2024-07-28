@@ -1609,3 +1609,177 @@ Array.prototype.groupBy = function(fn) {
 var sortBy = function(arr, fn) {
     return arr.sort((a,b) => fn(a) - fn(b))
 };
+
+
+// 2722. Join Two Arrays by ID 
+
+
+// Given two arrays arr1 and arr2, return a new array joinedArray. All the objects in each of the two inputs arrays will contain an id field that has an integer value. 
+
+// joinedArray is an array formed by merging arr1 and arr2 based on their id key. The length of joinedArray should be the length of unique values of id. The returned array should be sorted in ascending order based on the id key.
+
+// If a given id exists in one array but not the other, the single object with that id should be included in the result array without modification.
+
+// If two objects share an id, their properties should be merged into a single object:
+
+// If a key only exists in one object, that single key-value pair should be included in the object.
+// If a key is included in both objects, the value in the object from arr2 should override the value from arr1.
+ 
+// Example 1:
+
+// Input: 
+// arr1 = [
+//     {"id": 1, "x": 1},
+//     {"id": 2, "x": 9}
+// ], 
+// arr2 = [
+//     {"id": 3, "x": 5}
+// ]
+// Output: 
+// [
+//     {"id": 1, "x": 1},
+//     {"id": 2, "x": 9},
+//     {"id": 3, "x": 5}
+// ]
+// Explanation: There are no duplicate ids so arr1 is simply concatenated with arr2.
+// Example 2:
+
+// Input: 
+// arr1 = [
+//     {"id": 1, "x": 2, "y": 3},
+//     {"id": 2, "x": 3, "y": 6}
+// ], 
+// arr2 = [
+//     {"id": 2, "x": 10, "y": 20},
+//     {"id": 3, "x": 0, "y": 0}
+// ]
+// Output: 
+// [
+//     {"id": 1, "x": 2, "y": 3},
+//     {"id": 2, "x": 10, "y": 20},
+//     {"id": 3, "x": 0, "y": 0}
+// ]
+// Explanation: The two objects with id=1 and id=3 are included in the result array without modifiction. The two objects with id=2 are merged together. The keys from arr2 override the values in arr1.
+// Example 3:
+
+// Input: 
+// arr1 = [
+//     {"id": 1, "b": {"b": 94},"v": [4, 3], "y": 48}
+// ]
+// arr2 = [
+//     {"id": 1, "b": {"c": 84}, "v": [1, 3]}
+// ]
+// Output: [
+//     {"id": 1, "b": {"c": 84}, "v": [1, 3], "y": 48}
+// ]
+// Explanation: The two objects with id=1 are merged together. For the keys "b" and "v" the values from arr2 are used. Since the key "y" only exists in arr1, that value is taken form arr1.
+ 
+// Constraints:
+
+// arr1 and arr2 are valid JSON arrays
+// Each object in arr1 and arr2 has a unique integer id key
+// 2 <= JSON.stringify(arr1).length <= 106
+// 2 <= JSON.stringify(arr2).length <= 106
+
+
+// Sol_25}
+
+/**
+ * @param {Array} arr1
+ * @param {Array} arr2
+ * @return {Array}
+ */
+var join = function(arr1, arr2) {
+    const result = {}
+    
+    for(let i = 0; i < arr1.length; i++){
+        result[arr1[i].id] = arr1[i]
+    }
+
+    for(let i =0; i < arr2.length; i++){
+        if(result[arr2[i].id]){
+            for(const key in arr2[i])
+            result[arr2[i].id][key] = arr2[i][key]
+        }else{
+            result[arr2[i].id] = arr2[i]
+        }
+    }
+
+    return Object.values(result)
+};
+
+
+// 2625. Flatten Deeply Nested Array 
+
+
+// Given a multi-dimensional array arr and a depth n, return a flattened version of that array.
+
+// A multi-dimensional array is a recursive data structure that contains integers or other multi-dimensional arrays.
+
+// A flattened array is a version of that array with some or all of the sub-arrays removed and replaced with the actual elements in that sub-array. This flattening operation should only be done if the current depth of nesting is less than n. The depth of the elements in the first array are considered to be 0.
+
+// Please solve it without the built-in Array.flat method.
+
+// Example 1:
+
+// Input
+// arr = [1, 2, 3, [4, 5, 6], [7, 8, [9, 10, 11], 12], [13, 14, 15]]
+// n = 0
+// Output
+// [1, 2, 3, [4, 5, 6], [7, 8, [9, 10, 11], 12], [13, 14, 15]]
+
+// Explanation
+// Passing a depth of n=0 will always result in the original array. This is because the smallest possible depth of a subarray (0) is not less than n=0. Thus, no subarray should be flattened. 
+// Example 2:
+
+// Input
+// arr = [1, 2, 3, [4, 5, 6], [7, 8, [9, 10, 11], 12], [13, 14, 15]]
+// n = 1
+// Output
+// [1, 2, 3, 4, 5, 6, 7, 8, [9, 10, 11], 12, 13, 14, 15]
+
+// Explanation
+// The subarrays starting with 4, 7, and 13 are all flattened. This is because their depth of 0 is less than 1. However [9, 10, 11] remains unflattened because its depth is 1.
+// Example 3:
+
+// Input
+// arr = [[1, 2, 3], [4, 5, 6], [7, 8, [9, 10, 11], 12], [13, 14, 15]]
+// n = 2
+// Output
+// [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+
+// Explanation
+// The maximum depth of any subarray is 1. Thus, all of them are flattened.
+ 
+
+// Constraints:
+
+// 0 <= count of numbers in arr <= 105
+// 0 <= count of subarrays in arr <= 105
+// maxDepth <= 1000
+// -1000 <= each number <= 1000
+// 0 <= n <= 1000
+
+// Sol_26}
+
+/**
+ * @param {Array} arr
+ * @param {number} depth
+ * @return {Array}
+ */
+var flat = function (arr, n) {
+    if(n === 0){
+        return arr.slice()
+    }
+    let flatarr = []
+
+    for(let i =0; i < arr.length; i++){
+        if(Array.isArray(arr[i])){
+            const nested = flat(arr[i],n-1)
+            flatarr.push(...nested)
+        }else{
+            flatarr.push(arr[i])
+        }
+    }
+    return flatarr
+};
