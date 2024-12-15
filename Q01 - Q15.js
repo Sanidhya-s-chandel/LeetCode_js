@@ -264,3 +264,82 @@ var longestPalindrome = function(s) {
 
     return s.substring(start, end + 1);    
 };
+
+// 6. Zigzag Conversion
+// The string "PAYPALISHIRING" is written in a zigzag pattern on a given number of rows like this: (you may want to display this pattern in a fixed font for better legibility)
+
+// P   A   H   N
+// A P L S I I G
+// Y   I   R
+// And then read line by line: "PAHNAPLSIIGYIR"
+
+// Write the code that will take a string and make this conversion given a number of rows:
+
+// string convert(string s, int numRows);
+ 
+// Example 1:
+
+// Input: s = "PAYPALISHIRING", numRows = 3
+// Output: "PAHNAPLSIIGYIR"
+// Example 2:
+
+// Input: s = "PAYPALISHIRING", numRows = 4
+// Output: "PINALSIGYAHRPI"
+// Explanation:
+// P     I    N
+// A   L S  I G
+// Y A   H R
+// P     I
+// Example 3:
+
+// Input: s = "A", numRows = 1
+// Output: "A"
+ 
+// Constraints:
+
+// 1 <= s.length <= 1000
+// s consists of English letters (lower-case and upper-case), ',' and '.'.
+// 1 <= numRows <= 1000
+
+// Sol_06)
+
+/**
+ * @param {string} s
+ * @param {number} numRows
+ * @return {string}
+ */
+var convert = function(s, numRows) {
+    if ( numRows === 1 ) {
+        return s;
+    }
+
+    const modulo = 2 * numRows - 2;
+
+    const modulos = {};
+    const res = {};
+        for ( i = 1; i <= numRows; i++ ) {
+            res[i] = [];
+            if ( i === 1 ) {
+                modulos[ 0 ] = i; 
+            } else if ( i === numRows ) {
+                modulos[numRows - 1] = i;
+            } else {
+                modulos[ i - 1 ] = i;
+                modulos[ modulo - ( i - 1) ] = i
+            }
+        }
+
+    s.split('').forEach( (letter, index) => {
+        const position = index % modulo;
+
+        const row = modulos[position];
+
+        res[row].push(letter);
+    } );
+
+    return Object.values(res).reduce((string, array) => {
+        string += array.join('');
+
+        return string;
+    }, '');
+};
