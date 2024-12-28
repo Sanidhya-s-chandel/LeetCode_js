@@ -1228,3 +1228,99 @@ var removeNthFromEnd = function(head, n) {
     return dummy.next;
 
 };
+
+// 20.) Valid Parentheses
+// Given a string s containing just the characters '(', ')', '{', '}', '[' and ']', determine if the input string is valid.
+
+// An input string is valid if:
+
+// Open brackets must be closed by the same type of brackets.
+// Open brackets must be closed in the correct order.
+// Every close bracket has a corresponding open bracket of the same type.
+ 
+// Example 1:
+
+// Input: s = "()"
+// Output: true
+
+// Example 2:
+
+// Input: s = "()[]{}"
+// Output: true
+
+// Example 3:
+
+// Input: s = "(]"
+// Output: false
+
+// Example 4:
+
+// Input: s = "([])"
+// Output: true
+
+// Constraints:
+
+// 1 <= s.length <= 104
+// s consists of parentheses only '()[]{}'.
+
+// Sol_20}
+
+/**
+ * @param {string} s
+ * @return {boolean}
+ */
+var isValid = function(s) {
+    let parenthesisIndexes = [];
+    let braceIndexes = [];
+    let squareBracketIndex = [];
+
+    for (let i = 0; i < s.length; i++) {
+        if (s[i] === "(") {
+            parenthesisIndexes.push(i);
+
+        }
+        if (s[i] === ")") {
+            if (!parenthesisIndexes.length) {
+                return false;
+            }
+            let current = parenthesisIndexes.pop();
+            if ((!parenthesisIndexes.length || parenthesisIndexes.length % 2 !== 0) && (current < squareBracketIndex[squareBracketIndex.length - 1] || current < braceIndexes[braceIndexes.length - 1])) {
+                console.log(current, squareBracketIndex[squareBracketIndex.length - 1])
+                return false;
+            }
+        }
+        if (s[i] === "{") {
+            
+            braceIndexes.push(i);
+
+        }
+        if (s[i] === "}") {
+            if (!braceIndexes.length) {
+                return false;
+            }
+            let current = braceIndexes.pop();
+            if ((!braceIndexes.length || braceIndexes.length % 2 !== 0) && (current < squareBracketIndex[squareBracketIndex.length - 1] || current < parenthesisIndexes[parenthesisIndexes.length - 1])) {
+                return false;
+            }  
+        }
+        if (s[i] === "[") {
+            squareBracketIndex.push(i);
+        }
+        if (s[i] === "]") {
+            if (!squareBracketIndex.length) {
+                return false;
+            }
+            let current = squareBracketIndex.pop();
+            if ((!squareBracketIndex.length || squareBracketIndex.length % 2 !== 0) && (current < braceIndexes[braceIndexes.length - 1] || current < parenthesisIndexes[parenthesisIndexes.length - 1])) {
+                return false;
+            }  
+        }
+    }
+
+    if (!parenthesisIndexes.length && !braceIndexes.length && !squareBracketIndex.length) {
+        return true;
+    } 
+        return false;
+
+    return result;
+};
