@@ -1390,3 +1390,62 @@ var mergeTwoLists = function (list1, list2) {
 
     return headOfNewList.next;
 };
+
+// 22.) Generate Parentheses
+// Given n pairs of parentheses, write a function to generate all combinations of well-formed parentheses.
+
+// Example 1:
+
+// Input: n = 3
+// Output: ["((()))","(()())","(())()","()(())","()()()"]
+// Example 2:
+
+// Input: n = 1
+// Output: ["()"]
+ 
+// Constraints:
+
+// 1 <= n <= 8
+
+// Sol_22}
+
+/**
+ * @param {number} n
+ * @return {string[]}
+ */
+var generateParenthesis = function (n) {
+    let set = new Set();
+    let alreadyProccesed = new Set();
+    let opened = 1;
+    let closed = 0;
+    set.add("10(");
+    proccessedSome = true;
+    while (proccessedSome) {
+        proccessedSome = false;
+        for (let current of set.values()) {
+            if (current.length < (n * 2 + 2)){
+                set.delete(current);
+            }
+            if (alreadyProccesed.has(current)){
+                continue;
+            }
+
+            let opened = Number.parseInt(current[0]);
+            let closed = Number.parseInt(current[1]);
+            let value = current.slice(2);
+            
+            if (opened < n) {
+                set.add(`${opened + 1}${closed}${value + "("}`);
+            }
+
+            if (closed < n && closed + 1 <= opened){
+                set.add(`${opened}${closed + 1}${value + ")"}`);
+            }
+            
+            alreadyProccesed.add(current);
+            proccessedSome = true;
+        }
+    }
+    
+    return Array.from(set.values()).map(v => v.slice(2));
+};
