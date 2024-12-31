@@ -1449,3 +1449,76 @@ var generateParenthesis = function (n) {
     
     return Array.from(set.values()).map(v => v.slice(2));
 };
+
+// 23.) Merge k Sorted Lists
+// You are given an array of k linked-lists lists, each linked-list is sorted in ascending order.
+// Merge all the linked-lists into one sorted linked-list and return it.
+
+// Example 1:
+
+// Input: lists = [[1,4,5],[1,3,4],[2,6]]
+// Output: [1,1,2,3,4,4,5,6]
+// Explanation: The linked-lists are:
+// [
+//   1->4->5,
+//   1->3->4,
+//   2->6
+// ]
+// merging them into one sorted list:
+// 1->1->2->3->4->4->5->6
+// Example 2:
+
+// Input: lists = []
+// Output: []
+// Example 3:
+
+// Input: lists = [[]]
+// Output: []
+ 
+// Constraints:
+
+// k == lists.length
+// 0 <= k <= 104
+// 0 <= lists[i].length <= 500
+// -104 <= lists[i][j] <= 104
+// lists[i] is sorted in ascending order.
+// The sum of lists[i].length will not exceed 104.
+
+// Sol_23}
+
+var mergeKLists = function(lists) {
+    if (!lists || lists.length === 0) {
+        return null;
+    }
+
+    while (lists.length > 1) {
+        let temp = [];
+        for (let i = 0; i < lists.length; i += 2) {
+            let l1 = lists[i];
+            let l2 = i + 1 < lists.length ? lists[i + 1] : null;
+            temp.push(mergeLists(l1, l2));
+        }
+        lists = temp;
+    }
+
+    return lists[0];    
+};
+
+function mergeLists(l1, l2) {
+    let node = new ListNode();
+    let ans = node;
+
+    while (l1 && l2) {
+        if (l1.val > l2.val) {
+            node.next = l2;
+            l2 = l2.next;
+        } else {
+            node.next = l1;
+            l1 = l1.next;
+        }
+        node = node.next;
+    }
+
+    node.next = l1 ? l1 : l2;
+    return ans.next;
+}
